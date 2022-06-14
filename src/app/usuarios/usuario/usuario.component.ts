@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/store/app.reducer';
+import { cargarUsuario } from '../../store/actions/usuario.actions';
+import { Usuario } from '../../models/usuario.model';
 
 @Component({
   selector: 'app-usuario',
@@ -8,9 +13,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UsuarioComponent implements OnInit {
 
-  constructor() { }
+  usuario: Usuario | null = null;
+
+  constructor(private router: ActivatedRoute, private store : Store<AppState>) { }
 
   ngOnInit(): void {
+    this.router.params.subscribe(({id}) => {
+      this.store.dispatch(cargarUsuario({id}));
+    });
+
+    this.store.select('usuario').subscribe( ({user}) => {
+      this.usuario = user;
+    })
   }
 
 }
